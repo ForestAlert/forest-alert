@@ -1,23 +1,86 @@
-<template l>
-      <v-container fluid>
-
-        <v-card>
-            <v-card-title primary-title>
-                Accedi
-            </v-card-title>
-        </v-card>
-
-    </v-container>
+<template>
+  <v-container fluid class="d-flex align-center justify-center h-100">
+    <v-card style="max-width: 400px" width="100%">
+      <v-card-title class="pt-3" primary-title> Accedi </v-card-title>
+      <v-card-text>
+        <v-row>
+          <v-col cols="12">
+            <v-text-field
+              label="Email"
+              type="email"
+              autocomplete="username"
+              variant="outlined"
+              hide-details
+              v-model="v$.form.email.$model"
+              :error="v$.form.email.$error"
+            />
+          </v-col>
+          <v-col cols="12">
+            <v-text-field
+              label="Password"
+              type="password"
+              autocomplete="current-password"
+              variant="outlined"
+              hide-details
+              v-model="v$.form.password.$model"
+              :error="v$.form.password.$error"
+            />
+          </v-col>
+        </v-row>
+      </v-card-text>
+      <v-card-actions class="pa-4 pt-2 justify-space-between">
+        <v-btn to="/signup" :disabled="loading" elevation="0">
+          registrati
+        </v-btn>
+        <v-btn
+          @click="login()"
+          :loading="loading"
+          variant="elevated"
+          elevation="0"
+          color="primary"
+        >
+          Accedi
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-container>
 </template>
 
-
 <script>
+import { useVuelidate } from "@vuelidate/core";
+import { required, email, minLength } from "@vuelidate/validators";
 export default {
-    
-}
+  setup() {
+    return {
+      v$: useVuelidate(),
+    };
+  },
+
+  data() {
+    return {
+      loading: false,
+      form: {
+        email: "",
+        password: "",
+      },
+    };
+  },
+  validations: {
+    form: {
+      email: { required, email },
+      password: { required, minLength: minLength(8) },
+    },
+  },
+  methods: {
+    async login() {
+      this.v$.form.touch();
+      if (this.v$.form.$invalid) {
+        return;
+      }
+      console.log(this.form);
+    },
+  },
+};
 </script>
 
-
-<style lang="scss">
-    
-</style>
+<style lang="scss"></style>
