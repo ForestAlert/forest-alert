@@ -32,12 +32,14 @@ function initFirebase() {
   FieldPath = firebase.firestore.FieldPath;
   FieldValue = firebase.firestore.FieldValue;
 
-  firebaseAuth.onAuthStateChanged((user) => {
+  firebaseAuth.onAuthStateChanged(async (user) => {
     const auth = useAuthStore();
     if (user) {
-      auth.GET_USER(user);
+      await auth.GET_USER(user);
+      router.push({ name: "reports" });
     } else {
       auth.CLEAR();
+      router.push({ name: "login" });
     }
     auth.initialized = true;
   });
