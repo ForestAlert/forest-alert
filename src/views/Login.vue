@@ -49,10 +49,12 @@
 <script>
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength } from "@vuelidate/validators";
+import { useAuthStore } from "@/stores/auth";
 export default {
   setup() {
     return {
       v$: useVuelidate(),
+      auth$: useAuthStore(),
     };
   },
 
@@ -65,19 +67,28 @@ export default {
       },
     };
   },
-  validations: {
-    form: {
-      email: { required, email },
-      password: { required, minLength: minLength(8) },
-    },
+  validations() {
+    return {
+      form: {
+        email: { required, email },
+        password: { required, minLength: minLength(8) },
+      },
+    };
   },
   methods: {
     async login() {
-      this.v$.form.touch();
+      this.v$.form.$touch();
       if (this.v$.form.$invalid) {
         return;
       }
-      console.log(this.form);
+      try {
+        this.loading = true;
+        await this.auth$.LOGIN(this.form);
+      } catch (e) {
+        console.log(e);
+      } finally {
+        this.loading = false;
+      }
     },
   },
 };

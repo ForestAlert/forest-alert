@@ -4,9 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview"
+  },
+  "alias": {
+    "@": "./src"
   },
   "dependencies": {
     "@vuelidate/core": "^2.0.3",

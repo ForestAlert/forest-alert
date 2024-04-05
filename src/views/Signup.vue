@@ -91,10 +91,12 @@
 <script>
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength, sameAs } from "@vuelidate/validators";
+import { useAuthStore } from "@/stores/auth";
 export default {
   setup() {
     return {
       v$: useVuelidate(),
+      auth$: useAuthStore(),
     };
   },
 
@@ -107,8 +109,8 @@ export default {
         email: "",
         birthdate: null,
         password: "",
+        confirmPassword: "",
       },
-      confirmPassword: "",
     };
   },
   validations() {
@@ -133,7 +135,14 @@ export default {
       if (this.v$.form.$invalid) {
         return;
       }
-      console.log(this.form);
+      try {
+        this.loading = true;
+        await this.auth$.SIGNUP(this.form);
+      } catch (e) {
+        console.log(e);
+      } finally {
+        this.loading = false;
+      }
     },
   },
 };

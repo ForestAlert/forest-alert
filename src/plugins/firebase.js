@@ -3,6 +3,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import router from "./router";
+import { useAuthStore } from "@/stores/auth";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -30,6 +31,16 @@ function initFirebase() {
   firebaseAuth = firebase.auth();
   FieldPath = firebase.firestore.FieldPath;
   FieldValue = firebase.firestore.FieldValue;
+
+  firebaseAuth.onAuthStateChanged((user) => {
+    const auth = useAuthStore();
+    if (user) {
+      auth.GET_USER(user);
+    } else {
+      auth.CLEAR();
+    }
+    auth.initialized = true;
+  });
 }
 
 export { initFirebase, firebaseAuth, firebaseStore, FieldPath, FieldValue };
