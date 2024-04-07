@@ -4,6 +4,7 @@ import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import router from "./router";
 import { useAuthStore } from "@/stores/auth";
+import { useReportsStore } from "@/stores/reports";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -34,9 +35,13 @@ function initFirebase() {
 
   firebaseAuth.onAuthStateChanged(async (user) => {
     const auth = useAuthStore();
+    const reports = useReportsStore();
+    const currentRoute = router.currentRoute.value;
     if (user) {
       await auth.GET_USER(user);
-      router.push({ name: "reports" });
+      await reports.LIST();
+      if (currentRoute.name === "landing" || currentRoute.meta.noAuthRequired)
+        router.push({ name: "reports" });
     } else {
       auth.CLEAR();
       router.push({ name: "login" });

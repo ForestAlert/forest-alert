@@ -8,7 +8,11 @@ const defaultState = () => ({
 });
 export const useAuthStore = defineStore("auth", {
   state: defaultState,
-
+  getters: {
+    uid() {
+      return this.user.uid;
+    },
+  },
   actions: {
     async GET_USER(user) {
       this.user = user;

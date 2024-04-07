@@ -1,5 +1,9 @@
 <template>
-  <v-container fluid class="d-flex align-center justify-center h-100">
+  <v-container
+    fluid
+    class="d-flex align-center justify-center"
+    style="height: 90%"
+  >
     <div style="max-width: 400px" class="w-100">
       <div class="d-flex flex-column align-center w-100 pb-3" style="gap: 10px">
         <v-img class="w-50" src="/logo.png" />
