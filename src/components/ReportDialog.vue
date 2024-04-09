@@ -92,7 +92,7 @@ export default {
 
   data() {
     return {
-      dialog: true,
+      dialog: false,
       loading: false,
       id: null,
       form: defaultForm(),
@@ -111,6 +111,16 @@ export default {
   methods: {
     async close() {
       this.dialog = false;
+    },
+    open(report) {
+      if (report) {
+        this.id = report.id;
+        this.form = report;
+      } else {
+        this.id = null;
+        this.form = defaultForm();
+      }
+      this.dialog = true;
     },
     async save() {
       this.v$.form.$touch();
