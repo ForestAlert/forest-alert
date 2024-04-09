@@ -6,7 +6,7 @@
     transition="dialog-top-transition"
   >
     <v-card class="add-report-form">
-      <v-card-title
+      <v-card-title class="pt-4"
         >{{ id ? "Modifica segnalazione" : "Aggiungi segnalazione" }}
       </v-card-title>
       <v-card-text class="pa-4">

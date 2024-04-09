@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="h-100">
+  <v-container fluid class="h-100" style="overflow: hidden">
     <MobileView
       v-if="settings$.isMobile"
       @add="add"

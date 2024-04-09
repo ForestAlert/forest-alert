@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app style="height: 100vh">
     <router-view></router-view>
   </v-app>
 </template>
@@ -20,6 +20,7 @@ export default {
   },
   mounted() {
     window.addEventListener("resize", this.setIsMobile);
+    this.setIsMobile();
   },
 };
 </script>
