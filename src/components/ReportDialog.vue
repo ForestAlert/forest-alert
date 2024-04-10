@@ -93,7 +93,7 @@
           elevation="0"
           :disabled="loading"
           @click="deleteReport()"
-          v-if="id"
+          v-if="id && isReportOwner"
           color="error"
         >
           Elimina
