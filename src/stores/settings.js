@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 
 const defaultState = () => ({
   isMobile: false,
-  error: true,
+  error: false,
   errorMessage: "",
 });
 export const useSettingsStore = defineStore("settings", {

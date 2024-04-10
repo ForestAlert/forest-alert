@@ -60,8 +60,8 @@ export const useReportsStore = defineStore("reports", {
         gravity: data.gravity,
         peoplePresent: data.peoplePresent,
       };
-      var response = await firebaseStore.collection("reports").doc(id).update(payload);
-      return response.id;
+    await firebaseStore.collection("reports").doc(id).update(payload);
+      return id;
     },
     async DELETE(id) {
       await firebaseStore

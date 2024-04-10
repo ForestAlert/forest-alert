@@ -177,14 +177,15 @@ export default {
     },
     async open(report) {
       if (report) {
+        console.log(report);
         this.id = report.id;
         this.form = report;
         this.creator = await this.profiles$.GET(report.createdBy);
         this.file = null;
         if (report.image) {
           try {
-
             this.fileUrl = await this.reports$.DOWNLOAD_IMAGE(report.id, report.image);
+            console.log(this.fileUrl);
           } catch (e) {
             this.fileUrl = null;
             this.showErrorMessage("Errore durante il download dell'immagine");
@@ -225,6 +226,7 @@ export default {
         }
         this.dialog = false;
       } catch (e) {
+        console.log(e);
         this.showErrorMessage("Errore durante il salvataggio");
       } finally {
         this.loading = false;
