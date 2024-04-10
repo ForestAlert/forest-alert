@@ -35,6 +35,9 @@ export const useAuthStore = defineStore("auth", {
         password
       );
     },
+    async LOGOUT() {
+      await firebaseAuth.signOut();
+    },
     async SIGNUP({ firstName, lastName, email, birthdate, password }) {
       const { user } = await firebaseAuth.createUserWithEmailAndPassword(
         email,

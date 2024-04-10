@@ -13,12 +13,17 @@
       :reports="reports"
     ></DesktopView>
     <ReportDialog ref="reportDialog" />
+    <v-btn 
+   class="logout-btn"
+    @click="logout"
+    >Esci</v-btn>
   </v-container>
 </template>
 <script>
 import { defineAsyncComponent } from "vue";
 import { useReportsStore } from "@/stores/reports";
 import { useSettingsStore } from "@/stores/settings";
+import { useAuthStore } from "@/stores/auth";
 const DesktopView = () => import("@/components/views/Reports/Desktop.vue");
 const MobileView = () => import("@/components/views/Reports/Mobile.vue");
 import ReportDialog from "@/components/ReportDialog.vue";
@@ -27,6 +32,7 @@ export default {
     return {
       reports$: useReportsStore(),
       settings$: useSettingsStore(),
+      auth$: useAuthStore(),
     };
   },
   computed: {
@@ -41,6 +47,9 @@ export default {
     add() {
       this.$refs.reportDialog.open();
     },
+    logout() {
+      this.auth$.LOGOUT();
+    },
   },
 
   components: {
@@ -50,4 +59,17 @@ export default {
   },
 };
 </script>
-<style lang="scss"></style>
+<style lang="scss" >
+.logout-btn {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  
+  margin: 10px;
+  color: white;
+  background-color: red;
+  border-radius: 5px;
+  padding: 5px 10px;
+  z-index: 100;
+}
+</style>
