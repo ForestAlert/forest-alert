@@ -55,6 +55,24 @@
             ></v-rating>
           </v-col>
           <v-col cols="12">
+            <v-img
+              v-if="form.hasImage"
+              :src="file"
+              width="100%"
+              height="200"
+            ></v-img>
+            <v-file-input
+              v-model="file"
+              :label="form.hasImage ? 'Cambia immagine' : 'Carica immagine '"
+              variant="outlined"
+              hide-details
+              :readonly="!isReportOwner"
+              accept="image/png"
+
+            />
+          </v-col>
+
+          <v-col cols="12">
             <v-textarea
               label="Dettagli aggiuntivi"
               v-model="v$.form.description.$model"
@@ -125,6 +143,7 @@ export default {
       loading: false,
       id: null,
       creator: null,
+      file: null,
       form: defaultForm(),
     };
   },
@@ -155,10 +174,19 @@ export default {
         this.id = report.id;
         this.form = report;
         this.creator = await this.profiles$.GET(report.createdBy);
+        if (report.hasImage) {
+          this.file = await this.reports$.DOWNLOAD_IMAGE(report.id);
+          
+        } else {
+          this.file = null;
+        }
+
       } else {
         this.id = null;
         this.form = defaultForm();
         this.creator = null;
+        this.file = null;
+        this.v$.form.$reset();
       }
       this.dialog = true;
     },
@@ -167,11 +195,15 @@ export default {
       if (this.v$.form.$invalid) {
         return;
       }
+      this.loading = true;
       try {
         if (this.id) {
-          await this.reports$.UPDATE(this.id, this.form);
+          var id = await this.reports$.UPDATE(this.id, this.form);
         } else {
-          await this.reports$.CREATE(this.form);
+          var id = await this.reports$.CREATE(this.form);
+        }
+        if (this.file) {
+          await this.reports$.UPLOAD_IMAGE(id, this.file, this.file.name);
         }
         this.dialog = false;
       } catch (e) {

@@ -2,6 +2,7 @@
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
+import "firebase/compat/storage";
 import router from "./router";
 import { useAuthStore } from "@/stores/auth";
 import { useReportsStore } from "@/stores/reports";
@@ -24,12 +25,14 @@ const firebaseConfig = {
 
 var firebaseStore;
 var firebaseAuth;
+var firebaseStorage;
 var FieldPath;
 var FieldValue;
 function initFirebase() {
   firebase.initializeApp(firebaseConfig);
   firebaseStore = firebase.firestore();
   firebaseAuth = firebase.auth();
+  firebaseStorage = firebase.storage();
   FieldPath = firebase.firestore.FieldPath;
   FieldValue = firebase.firestore.FieldValue;
 
@@ -50,5 +53,5 @@ function initFirebase() {
   });
 }
 
-export { initFirebase, firebaseAuth, firebaseStore, FieldPath, FieldValue };
+export { initFirebase, firebaseAuth, firebaseStore, FieldPath, FieldValue, firebaseStorage };
 export default firebase;

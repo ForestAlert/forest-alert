@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { firebaseAuth, firebaseStore } from "@/plugins/firebase";
+import { firebaseAuth, firebaseStore, firebaseStorage } from "@/plugins/firebase";
 import { useAuthStore } from "./auth";
 const defaultState = () => ({
   reports: [],
@@ -50,7 +50,8 @@ export const useReportsStore = defineStore("reports", {
         createdAt: new Date(),
         createdBy: useAuthStore().uid,
       };
-      await firebaseStore.collection("reports").add(payload);
+      const response = await firebaseStore.collection("reports").add(payload);
+      return response.id;
     },
     async UPDATE(id, data) {
       const payload = {
@@ -59,7 +60,8 @@ export const useReportsStore = defineStore("reports", {
         gravity: data.gravity,
         peoplePresent: data.peoplePresent,
       };
-      await firebaseStore.collection("reports").doc(id).update(payload);
+      var response = await firebaseStore.collection("reports").doc(id).update(payload);
+      return response.id;
     },
     async DELETE(id) {
       await firebaseStore
@@ -69,7 +71,8 @@ export const useReportsStore = defineStore("reports", {
     },
 
     async UPLOAD_IMAGE(id, file, filename = "") {
-      var storageRef = firebase.storage().ref();
+      console.log("Uploading image", id, file, filename);
+      var storageRef = firebaseStorage.ref();
       var extension = filename.split(".").at(-1);
       var ref = storageRef.child(`reports/${id}/image.${extension}`);
       await ref.put(file);
@@ -77,5 +80,13 @@ export const useReportsStore = defineStore("reports", {
         hasImage: true,
       });
     },
+    async DOWNLOAD_IMAGE(id) {
+      var storageRef = firebaseStorage.ref();
+      var ref = storageRef.child(`reports/${id}/image.png`);
+      var url = await ref.getDownloadURL();
+      return url;
+
+
+    }
   },
 });
