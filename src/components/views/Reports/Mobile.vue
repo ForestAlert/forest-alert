@@ -49,9 +49,9 @@
       position="absolute"
       absolute
       style="right: 16px; bottom: 16px"
-      icon="mdi-plus"
       @click="$emit('add')"
-    />
+      >Invia segnalazione<v-icon class="pl-2">mdi-plus</v-icon></v-btn
+    >
   </div>
 </template>
 
