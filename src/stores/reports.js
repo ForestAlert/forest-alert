@@ -5,23 +5,37 @@ const defaultState = () => ({
   reports: [],
   unsubscribe: null,
 });
+
+function convertFirebaseDate(fbDate) {
+  if (!fbDate) return "";
+  return new Date(fbDate.seconds * 1000);
+}
+
 export const useReportsStore = defineStore("reports", {
   state: defaultState,
   actions: {
     async LIST() {
       const ref = firebaseStore
         .collection("reports")
-        .where("deleted", "==", true);
+        .where("deleted", "==", false);
       const data = await ref.get();
-      this.reports = data.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      this.unsubscribe = ref.onSnapshot((querySnapshot) => {
-        this.reports = querySnapshot.docs.map((doc) => ({
+      this.reports = data.docs.map((doc) => {
+        const data = doc.data();
+        return {
           id: doc.id,
-          ...doc.data(),
-        }));
+          ...data,
+          createdAt_date: convertFirebaseDate(data.createdAt),
+        };
+      });
+      this.unsubscribe = ref.onSnapshot((querySnapshot) => {
+        this.reports = querySnapshot.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            ...data,
+            createdAt_date: convertFirebaseDate(data.createdAt),
+          };
+        });
       });
     },
     async CREATE(data) {
@@ -30,7 +44,7 @@ export const useReportsStore = defineStore("reports", {
         description: data.description,
         gravity: data.gravity,
         peoplePresent: data.peoplePresent,
-        deleted: true,
+        deleted: false,
 
         hasImage: false,
         createdAt: new Date(),

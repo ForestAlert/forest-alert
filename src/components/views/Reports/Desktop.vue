@@ -13,6 +13,9 @@
         :items="reports"
         fixed-footer
       >
+        <template v-slot:[`item.createdAt_date`]="{ value }">
+          {{  formatDate(value) }}
+        </template>
         <template v-slot:[`item.gravity`]="{ value }">
           <v-rating
             :model-value="value"
@@ -49,6 +52,10 @@ export default {
         {
           title: "Posizione",
           value: "position",
+        },
+        {
+          title: "Creazione",
+          value: "createdAt_date",
         },
         {
           title: "Gravità",

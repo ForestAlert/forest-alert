@@ -12,15 +12,10 @@
           :key="item.id"
           style="height: fit-content"
         >
-          <v-card class="">
-            <v-btn
-              position="absolute"
-              absolute
-              elevation="0"
-              style="right: 0px; top: 0px"
-              icon="mdi-pen"
-              @click="$emit('edit', item)"
-            />
+          <v-card class=""
+          @click="$emit('edit', item)"
+          >
+            
             <v-card-text class="d-flex flex-column" style="gap: 6px">
               <div><strong>Posizione</strong>: {{ item.position }}</div>
               <div class="d-flex align-center">

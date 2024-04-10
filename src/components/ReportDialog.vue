@@ -6,9 +6,12 @@
     transition="dialog-top-transition"
   >
     <v-card class="add-report-form">
-      <v-card-title class="pt-4"
+      <v-card-title class="pt-4 pb-0"
         >{{ id ? "Modifica segnalazione" : "Aggiungi segnalazione" }}
       </v-card-title>
+      <v-card-subtitle v-if="creator" class="pl-4 pt-0 mt-0">
+        Aggiunta da {{ creator?.firstName }} {{ creator?.lastName }} il {{formatDate(form?.createdAt_date  ) }}
+      </v-card-subtitle>
       <v-card-text class="pa-4">
         <v-row>
           <v-col cols="12">
@@ -18,6 +21,7 @@
               :error="v$.form.position.$error"
               variant="outlined"
               hide-details
+              :readonly="!isReportOwner"
             ></v-text-field>
           </v-col>
 
@@ -29,6 +33,8 @@
               :error="v$.form.peoplePresent.$error"
               hide-details
               inline
+              :readonly="!isReportOwner"
+
             >
               <v-radio label="Si" :value="true"></v-radio>
               <v-radio label="No" :value="false"></v-radio>
@@ -44,6 +50,8 @@
               empty-icon="mdi-alert-octagon-outline"
               full-icon="mdi-alert-octagon"
               hide-details
+              :readonly="!isReportOwner"
+
             ></v-rating>
           </v-col>
           <v-col cols="12">
@@ -53,6 +61,8 @@
               :error="v$.form.description.$error"
               variant="outlined"
               hide-details
+              :readonly="!isReportOwner"
+
             ></v-textarea>
           </v-col>
         </v-row>
@@ -63,17 +73,23 @@
           elevation="0"
           :disabled="loading"
           @click="deleteReport()"
+          v-if="id"
+          color="error"
         >
           Elimina
         </v-btn>
         <v-spacer />
-        <v-btn :disabled="loading" @click="close()"> Annulla </v-btn>
+        <v-btn :disabled="loading" @click="close()"> 
+        {{ isReportOwner ? "Annulla" : "Chiudi" }}
+        </v-btn>
         <v-btn
           @click="save()"
           :loading="loading"
           variant="elevated"
           elevation="0"
           color="primary"
+
+          v-if="isReportOwner"
         >
           Salva
         </v-btn>
@@ -83,6 +99,8 @@
 </template>
 <script>
 import { useReportsStore } from "@/stores/reports";
+import { useAuthStore } from "@/stores/auth";
+import { useProfilesStore } from "@/stores/profiles";
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 const defaultForm = () => ({
@@ -95,6 +113,8 @@ export default {
   setup() {
     return {
       reports$: useReportsStore(),
+      auth$: useAuthStore(),
+      profiles$: useProfilesStore(),
       v$: useVuelidate(),
     };
   },
@@ -104,10 +124,13 @@ export default {
       dialog: false,
       loading: false,
       id: null,
+      creator: null,
       form: defaultForm(),
     };
   },
   validations() {
+    const date = new Date();
+
     return {
       form: {
         position: { required },
@@ -117,17 +140,25 @@ export default {
       },
     };
   },
+  computed: {
+    isReportOwner() {
+      if (!this.id) return true;
+      return this.auth$.uid === this.form.createdBy;
+    },
+  },
   methods: {
     async close() {
       this.dialog = false;
     },
-    open(report) {
+    async open(report) {
       if (report) {
         this.id = report.id;
         this.form = report;
+        this.creator = await this.profiles$.GET(report.createdBy);
       } else {
         this.id = null;
         this.form = defaultForm();
+        this.creator = null;
       }
       this.dialog = true;
     },

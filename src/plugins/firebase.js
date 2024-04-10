@@ -38,7 +38,7 @@ function initFirebase() {
     const reports = useReportsStore();
     const currentRoute = router.currentRoute.value;
     if (user) {
-      await auth.GET_USER(user);
+      await auth.GET_PROFILE(user);
       await reports.LIST();
       if (currentRoute.name === "landing" || currentRoute.meta.noAuthRequired)
         router.push({ name: "reports" });

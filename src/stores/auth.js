@@ -14,10 +14,10 @@ export const useAuthStore = defineStore("auth", {
     },
   },
   actions: {
-    async GET_USER(user) {
+    async GET_PROFILE(user) {
       this.user = user;
       console.log("UID", user.uid);
-      const doc = await firebaseStore.collection("utenti").doc(user.uid).get();
+      const doc = await firebaseStore.collection("profiles").doc(user.uid).get();
       this.profile = {
         id: doc.id,
         ...doc.data(),
@@ -40,7 +40,7 @@ export const useAuthStore = defineStore("auth", {
         email,
         password
       );
-      const doc = await firebaseStore.collection("utenti").doc(user.uid).set({
+      const doc = await firebaseStore.collection("profiles").doc(user.uid).set({
         firstName,
         lastName,
         email,

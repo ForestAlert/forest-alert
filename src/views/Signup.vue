@@ -58,6 +58,7 @@
               v-model="v$.form.password.$model"
               :error="v$.form.password.$error"
             />
+            <small>La password deve contenere almeno 8 caratteri</small>
           </v-col>
           <v-col cols="12">
             <v-text-field
@@ -68,6 +69,7 @@
               hide-details
               v-model="v$.form.confirmPassword.$model"
               :error="v$.form.confirmPassword.$error"
+              
             />
           </v-col>
         </v-row>
