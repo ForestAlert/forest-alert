@@ -3,6 +3,9 @@
     <v-card-title>Segnalazioni</v-card-title>
     <div class="h-full" style="overflow: hidden">
       <v-row class="ma-0" style="overflow: auto; max-height: 100%">
+        <v-col cols="12" v-if="!reports.length">
+          <v-alert title="Nessuna segnalazione presente"></v-alert>
+        </v-col>
         <v-col
           cols="12"
           v-for="item in reports"

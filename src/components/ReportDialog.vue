@@ -58,6 +58,15 @@
         </v-row>
       </v-card-text>
       <v-card-actions class="pa-4 pt-2 justify-end">
+        <v-btn
+          variant="elevated"
+          elevation="0"
+          :disabled="loading"
+          @click="deleteReport()"
+        >
+          Elimina
+        </v-btn>
+        <v-spacer />
         <v-btn :disabled="loading" @click="close()"> Annulla </v-btn>
         <v-btn
           @click="save()"
@@ -138,6 +147,14 @@ export default {
         console.log(e);
       } finally {
         this.loading = false;
+      }
+    },
+    async deleteReport() {
+      try {
+        await this.reports$.DELETE(this.id);
+        this.close();
+      } catch (e) {
+        console.log(e);
       }
     },
   },
