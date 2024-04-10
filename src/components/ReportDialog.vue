@@ -56,18 +56,20 @@
           </v-col>
           <v-col cols="12">
             <v-img
-              v-if="form.hasImage"
-              :src="file"
+              v-if="form.image"
+              :src="fileUrl"
               width="100%"
               height="200"
+              class="mb-2"
+              @click="openImage"
             ></v-img>
             <v-file-input
               v-model="file"
-              :label="form.hasImage ? 'Cambia immagine' : 'Carica immagine '"
+              :label="form.image ? 'Cambia immagine' : 'Carica immagine '"
               variant="outlined"
               hide-details
               :readonly="!isReportOwner"
-              accept="image/png"
+              accept="image/*"
 
             />
           </v-col>
@@ -144,6 +146,7 @@ export default {
       id: null,
       creator: null,
       file: null,
+      fileUrl: null,
       form: defaultForm(),
     };
   },
@@ -169,16 +172,26 @@ export default {
     async close() {
       this.dialog = false;
     },
+    async openImage() {
+      window.open(this.fileUrl, "_blank");
+    },
     async open(report) {
       if (report) {
         this.id = report.id;
         this.form = report;
         this.creator = await this.profiles$.GET(report.createdBy);
-        if (report.hasImage) {
-          this.file = await this.reports$.DOWNLOAD_IMAGE(report.id);
-          
+        this.file = null;
+        if (report.image) {
+          try {
+
+            this.fileUrl = await this.reports$.DOWNLOAD_IMAGE(report.id, report.image);
+          } catch (e) {
+            this.fileUrl = null;
+            this.showErrorMessage("Errore durante il download dell'immagine");
+          }
         } else {
-          this.file = null;
+          this.fileUrl = null;
+
         }
 
       } else {
@@ -203,11 +216,16 @@ export default {
           var id = await this.reports$.CREATE(this.form);
         }
         if (this.file) {
-          await this.reports$.UPLOAD_IMAGE(id, this.file, this.file.name);
+          try {
+
+            await this.reports$.UPLOAD_IMAGE(id, this.file, this.file.name);
+          } catch (e) {
+            this.showErrorMessage("Errore durante il caricamento dell'immagine");
+          }
         }
         this.dialog = false;
       } catch (e) {
-        console.log(e);
+        this.showErrorMessage("Errore durante il salvataggio");
       } finally {
         this.loading = false;
       }
@@ -218,6 +236,7 @@ export default {
         this.close();
       } catch (e) {
         console.log(e);
+        this.showErrorMessage("Errore durante l'eliminazione");
       }
     },
   },

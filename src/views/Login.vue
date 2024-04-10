@@ -96,6 +96,7 @@ export default {
         await this.auth$.LOGIN(this.form);
       } catch (e) {
         console.log(e);
+        this.showErrorMessage("Errore durante il login");
       } finally {
         this.loading = false;
       }

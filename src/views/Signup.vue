@@ -142,6 +142,7 @@ export default {
         await this.auth$.SIGNUP(this.form);
       } catch (e) {
         console.log(e);
+        this.showErrorMessage("Errore durante la registrazione");
       } finally {
         this.loading = false;
       }

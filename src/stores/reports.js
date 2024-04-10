@@ -46,7 +46,7 @@ export const useReportsStore = defineStore("reports", {
         peoplePresent: data.peoplePresent,
         deleted: false,
 
-        hasImage: false,
+        image: null,
         createdAt: new Date(),
         createdBy: useAuthStore().uid,
       };
@@ -73,16 +73,16 @@ export const useReportsStore = defineStore("reports", {
     async UPLOAD_IMAGE(id, file, filename = "") {
       console.log("Uploading image", id, file, filename);
       var storageRef = firebaseStorage.ref();
-      var extension = filename.split(".").at(-1);
-      var ref = storageRef.child(`reports/${id}/image.${extension}`);
+  
+      var ref = storageRef.child(`reports/${id}/${filename}`);
       await ref.put(file);
       await firebaseStore.collection("reports").doc(id).update({
-        hasImage: true,
+        image: filename,
       });
     },
-    async DOWNLOAD_IMAGE(id) {
+    async DOWNLOAD_IMAGE(id, filename = "") {
       var storageRef = firebaseStorage.ref();
-      var ref = storageRef.child(`reports/${id}/image.png`);
+      var ref = storageRef.child(`reports/${id}/${filename}`);
       var url = await ref.getDownloadURL();
       return url;
 

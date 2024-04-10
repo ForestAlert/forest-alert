@@ -1,3 +1,4 @@
+import { useSettingsStore } from "@/stores/settings";
 export default {
 
     methods: {
@@ -12,6 +13,11 @@ export default {
             var time = date.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
             return `${day} ${time}`;
 
+        },
+        showErrorMessage(message) {
+            const settings = useSettingsStore()
+            settings.error = true
+            settings.errorMessage = message 
         }
     },
 }
